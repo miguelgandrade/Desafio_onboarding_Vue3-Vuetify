@@ -1,8 +1,7 @@
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed,onMounted } from 'vue'
 import { useBolsaStore } from '@/stores/bolsa'
 
-const opcoes = ["Bolsa Matricula", "Parcelamento de Matricula", "Bolsa Mensalidade"]
 const numero_matricula = ref("")
 const valor_bolsa = ref(null)
 const selecao = ref(null)
@@ -49,6 +48,33 @@ function enviar_dados() {
 
   mensagem.value = true
 }
+
+const tipo_bolsas = ref([])
+
+async function carregarTipoBolsa() {
+  console.log('Iniciando requisição à API...')
+
+  try {
+    const resposta = await fetch('https://localhost:7213/api/Bolsa')
+
+    if (!resposta.ok) {
+      throw new Error(`Erro HTTP: ${resposta.status}`)
+    }
+
+    tipo_bolsas.value = await resposta.json()
+
+    console.log('Resposta recebida:', tipo_bolsas.value)
+  } catch (erro) {
+    console.error('Erro ao conectar com a API:', erro)
+    tipo_bolsas.value = []
+  }
+
+  
+}
+onMounted(() => {
+  carregarTipoBolsa()
+})
+
 </script>
 
 <template>
@@ -58,7 +84,7 @@ function enviar_dados() {
     </div>
 
     <div class="flex-1-1">
-      <v-select label="Seleção de Bolsa" :items="opcoes" v-model="selecao" />
+      <v-select label="Seleção de Bolsa" :items="tipo_bolsas" v-model="selecao" />
     </div>
   </div>
   <div class="d-flex flex-column flex-md-row ga-4">
