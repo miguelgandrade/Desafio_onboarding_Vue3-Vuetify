@@ -42,3 +42,13 @@ __screenshots__/
 .env
 .env.*
 !.env.example
+
+# Visual Studio
+.vs/
+**/bin/
+**/obj/
+*.user
+*.suo
+
+# Node.js
+node_modules/
