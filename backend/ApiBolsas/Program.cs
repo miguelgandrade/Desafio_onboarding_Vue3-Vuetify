@@ -5,9 +5,10 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 
 // Registra o BolsaService para injeção de dependência
-builder.Services.AddScoped<BolsaService>();
+builder.Services.AddSingleton<BolsaService>();
 
 builder.Services.AddOpenApi();
+
 
 builder.Services.AddCors(options =>
 {
@@ -34,9 +35,9 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.UseAuthorization();
-
 app.UseCors("PermitirVue");
+
+app.UseAuthorization();
 
 app.MapControllers();
 

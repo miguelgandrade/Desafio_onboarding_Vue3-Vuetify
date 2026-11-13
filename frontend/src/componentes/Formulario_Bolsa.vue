@@ -1,6 +1,7 @@
 <script setup>
 import { ref, computed,onMounted } from 'vue'
 import { useBolsaStore } from '@/stores/bolsa'
+import { buscarTipoBolsa } from '@/services/BolsaService'
 
 const numero_matricula = ref("")
 const valor_bolsa = ref(null)
@@ -9,6 +10,8 @@ const data = ref(null)
 const mensagem = ref(false)
 
 const bolsa_store = useBolsaStore()
+
+const tipo_bolsas = ref([])
 
 const validar_entrada_valor_bolsa = computed(() => {
   if (valor_bolsa.value > 0 && valor_bolsa.value != null && typeof valor_bolsa.value == 'number' &&
@@ -49,32 +52,14 @@ function enviar_dados() {
   mensagem.value = true
 }
 
-const tipo_bolsas = ref([])
-
-async function carregarTipoBolsa() {
-  console.log('Iniciando requisição à API...')
-
-  try {
-    const resposta = await fetch('https://localhost:7213/api/Bolsa')
-
-    if (!resposta.ok) {
-      throw new Error(`Erro HTTP: ${resposta.status}`)
-    }
-
-    tipo_bolsas.value = await resposta.json()
-
-    console.log('Resposta recebida:', tipo_bolsas.value)
-  } catch (erro) {
-    console.error('Erro ao conectar com a API:', erro)
+onMounted(async() => {
+  try{
+    tipo_bolsas.value = await buscarTipoBolsa()
+  } catch(erro){
+    console.error('Erro ao conectar Api', erro)
     tipo_bolsas.value = []
   }
-
-  
-}
-onMounted(() => {
-  carregarTipoBolsa()
 })
-
 </script>
 
 <template>
